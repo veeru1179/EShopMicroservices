@@ -1,14 +1,14 @@
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCarter();
+var assembly = typeof(Program).Assembly;
 builder.Services.AddMediatR(config =>
 {
-    config.RegisterServicesFromAssembly(typeof(Program).Assembly);
+    config.RegisterServicesFromAssembly(assembly);
 });
-
-builder.Services.AddMarten(config =>
+builder.Services.AddMarten(opts =>
 {
-    config.Connection(builder.Configuration.GetConnectionString("Databae")!);
+    opts.Connection(builder.Configuration.GetConnectionString("Database")!);
 }).UseLightweightSessions();
 
 var app = builder.Build();
