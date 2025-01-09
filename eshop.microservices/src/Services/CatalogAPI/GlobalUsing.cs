@@ -5,3 +5,8 @@ global using BuildingBlocks.CQRS;
 global using CatalogAPI.Models;
 global using Marten;
 global using CatalogAPI.Exception;
+global using BuildingBlocks.Behaviors;
+global using FluentValidation;
+global using BuildingBlocks.Exception.Handler;
+global using Marten.Schema;
+global using CatalogAPI.Data;
