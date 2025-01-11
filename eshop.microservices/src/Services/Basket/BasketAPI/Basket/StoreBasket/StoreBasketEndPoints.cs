@@ -21,7 +21,7 @@ namespace BasketAPI.Basket.StoreBasket
                 var result = await sender.Send(commnad);
 
                 var response = result.Adapt<StoreBasketResponse>();
-                return Results.Created($"/basket/{response.UserName}", response);
+                return Results.Created($"/basket/{commnad.Cart.UserName}", response);
 
             })
               .WithName("AddBasket ")

@@ -2,6 +2,7 @@
 
 using BuildingBlocks.Behaviors;
 using BuildingBlocks.Exception.Handler;
+using Discount.Grpc;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Weasel.Core;
@@ -31,6 +32,21 @@ builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
 });
+
+builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>
+{
+    options.Address = new Uri(builder.Configuration["GrpcSettings:DiscountUrl"]!);
+})
+    .ConfigurePrimaryHttpMessageHandler(() =>
+    {
+        var handler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback =
+            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        };
+
+        return handler;
+    });
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("Database")!)
     .AddRedis(builder.Configuration.GetConnectionString("Redis")!);
@@ -45,7 +61,7 @@ app.UseExceptionHandler(opt => { });
 app.UseHealthChecks("/health",
     new HealthCheckOptions
     {
-        ResponseWriter= UIResponseWriter.WriteHealthCheckUIResponse
+        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
     });
 app.Run();
 
