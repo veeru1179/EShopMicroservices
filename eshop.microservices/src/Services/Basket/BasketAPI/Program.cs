@@ -1,10 +1,7 @@
 
 
 using BuildingBlocks.Behaviors;
-using BuildingBlocks.Exception.Handler;
-using Discount.Grpc;
-using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+
 using Weasel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,6 +44,9 @@ builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(
 
         return handler;
     });
+
+builder.Services.AddMessageBroker(builder.Configuration);
+
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("Database")!)
     .AddRedis(builder.Configuration.GetConnectionString("Redis")!);
